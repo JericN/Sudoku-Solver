@@ -21,6 +21,12 @@ public class Logic {
             System.out.println("Invalid Sudoku");
         }
         System.out.println("Logic Stopped");
+        for (int i = 0; i < emptyCellCount; i++) {
+            for (int j = 0; j < emptyCell.get(i).get(2) + 3; j++) {
+                System.out.print(" " + emptyCell.get(i).get(j));
+            }
+            System.out.println();
+        }
     }
 
     public void getPossibleSolutions() {
@@ -28,18 +34,29 @@ public class Logic {
             for (int x = 0; x < 9; x++) {
                 if (cell[y][x] == 0) {
                     int val = 1;
-                    for (int i = 1; i < 10; i++) {
+                    for (int num = 1; num < 10; num++) {
                         boolean flag = true;
                         for (int k = 0; k < 9; k++) {
-                            if (i == cell[y][k]) {
+                            if (num == cell[y][k]) {
                                 flag = false;
                             }
-                            if (i == cell[k][x]) {
+                            if (num == cell[k][x]) {
                                 flag = false;
                             }
                         }
+                        int xZone = (int) Math.ceil((float)(x + 1) / 3);
+                        int yZone = (int) Math.ceil((float)(y + 1) / 3);
+                        for (int i = (yZone - 1) * 3; i < yZone * 3; i++) {
+                            for (int j = (xZone - 1) * 3; j < xZone * 3; j++) {
+                                if (i != y || j != x) {
+                                    if (num == cell[i][j]) {
+                                        flag = false;
+                                    }
+                                }
+                            }
+                        }
                         if (flag) {
-                            flagVals[y][x][val] = i;
+                            flagVals[y][x][val] = num;
                             val++;
                         }
                     }
@@ -52,28 +69,21 @@ public class Logic {
     static int count = 0;
 
     public boolean iterateSolutions(int nPos) {
-        for (int i = nPos; i < emptyCellCount; i++) {
-            if (i == emptyCellCount-1) {
-                count++;
-                System.out.println("DONE: " + count);
-                for (int k = 0; k < 9; k++) {
-                    for (int j = 0; j < 9; j++) {
-                        System.out.print("  " + cell[k][j]);
-                    }
-                    System.out.println();
-                }
-                return checkSolution();
-            }
-            int yPos = emptyCell.get(i).get(0);
-            int xPos = emptyCell.get(i).get(1);
-            for (int k = 0; k < emptyCell.get(i).get(2); k++) {
-                cell[yPos][xPos] = emptyCell.get(i).get(k + 3);
-                if (iterateSolutions(i + 1)) {
+        if (nPos == emptyCellCount) {
+            count++;
+            System.out.println("DONE: " + count);
+            return checkSolution();
+        } else {
+            int yPos = emptyCell.get(nPos).get(0);
+            int xPos = emptyCell.get(nPos).get(1);
+            for (int k = 0; k < emptyCell.get(nPos).get(2); k++) {
+                cell[yPos][xPos] = emptyCell.get(nPos).get(k + 3);
+                checkPossible();
+                if (iterateSolutions(nPos + 1)) {
                     return true;
                 }
             }
             cell[yPos][xPos] = 0;
-            return false;
         }
         return false;
     }
@@ -93,32 +103,26 @@ public class Logic {
                     }
                 }
                 if (!flag) {
-                    System.out.println("Short False");
                     return false;
                 }
             }
         }
         if (flag) {
+            for (int k = 0; k < 9; k++) {
+                for (int j = 0; j < 9; j++) {
+                    System.out.print("  " + cell[k][j]);
+                }
+                System.out.println();
+            }
             System.out.println("Returned True");
             return true;
         } else {
-            System.out.println("Returned False");
             return false;
         }
     }
+    public void checkPossible(){
 
-    public void print() {
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                for (int k = 1; k < flagVals[y][x][0]; k++) {
-                    System.out.println(flagVals[y][x][k]);
-                }
-                System.out.println("\n\n");
-            }
-        }
     }
-
-
     public void sortFlags() {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
@@ -146,11 +150,20 @@ public class Logic {
             emptyCell.get(j + 1).clear();
             emptyCell.get(j + 1).addAll(key);
         }
-        for (int i = 0; i < emptyCellCount; i++) {
-            for (int j = 0; j < emptyCell.get(i).get(2)+3; j++) {
-                System.out.print(" "+emptyCell.get(i).get(j));
+    }
+
+    public void print() {
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                for (int k = 1; k < flagVals[y][x][0]; k++) {
+                    if(flagVals[y][x][k]!=0){
+                        System.out.print(flagVals[y][x][k]);
+                    }
+                }
+                System.out.println("\n");
             }
-            System.out.println();
         }
     }
+
+
 }

@@ -120,18 +120,8 @@ public class Graphics {
         int i = 1;
         for (int y = 0; y < 9; y++) {
             for (int x = y; x < 9; x++) {
-                cell[y][x] = i;
-                i++;
+                cell[y][x] = 0;
             }
-            i = 1;
-        }
-        i = 1;
-        for (int y = 0; y < 9; y++) {
-            for (int x = y-1; x >= 0; x--) {
-                cell[y][x] = i;
-                i--;
-            }
-            i = 9;
         }
         vars.setCell(cell);
         setGridArea(gridArea, width, height, offset_w, offset_h);
@@ -177,7 +167,11 @@ public class Graphics {
         }
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                cells[y][x].setText(String.valueOf(cell[y][x]));
+                if (cell[y][x] == 0) {
+                    cells[y][x].setText("");
+                } else {
+                    cells[y][x].setText(String.valueOf(cell[y][x]));
+                }
             }
         }
     }
