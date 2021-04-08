@@ -1,5 +1,5 @@
 public class Variable {
-    int[][] cell;
+    static int[][] cell;
     public void value(){
         cell = new int[9][9];
     }
