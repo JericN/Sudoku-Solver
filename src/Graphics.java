@@ -106,6 +106,7 @@ public class Graphics {
         calc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 logic.start();
+                updateGrid();
             }
         });
 
@@ -117,12 +118,17 @@ public class Graphics {
         int offset_w = (int) (WIDTH * 0.3 + 20);
         int offset_h = 20;
         JPanel gridArea = new JPanel();
-        int i = 1;
-        for (int y = 0; y < 9; y++) {
-            for (int x = y; x < 9; x++) {
-                cell[y][x] = 0;
-            }
-        }
+        cell = new int[][]{
+                {3,7,4,1,6,8,2,5,9},
+                {5,1,9,4,2,7,6,8,3},
+                {2,8,6,3,9,5,7,1,4},
+                {6,9,8,5,4,1,3,7,2},
+                {1,2,3,7,8,6,9,4,5},
+                {4,5,7,9,3,2,1,6,8},
+                {9,6,2,8,7,4,5,3,1},
+                {8,3,5,6,1,9,4,2,7},
+                {7,4,1,2,5,3,8,9,6},
+        };
         vars.setCell(cell);
         setGridArea(gridArea, width, height, offset_w, offset_h);
         setGridCells(gridArea, width, height);
@@ -165,6 +171,9 @@ public class Graphics {
                 gridArea.add(cells[y][x]);
             }
         }
+        updateGrid();
+    }
+    public void updateGrid(){
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 if (cell[y][x] == 0) {
