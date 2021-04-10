@@ -179,6 +179,7 @@ public class Graphics {
                 cell = vars.getCell();
                 updateGridLabels();
                 updateNumCount();
+                vars.resetSolutions();
             }
         });
         reset.addActionListener(new ActionListener() {

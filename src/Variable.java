@@ -5,10 +5,12 @@ public class Variable {
     static int numSolutions;
     static ArrayList<Integer>[] invalidCell;
     static int invalidCount;
+    static ArrayList<int[][]> solutionsList;
 
     public Variable() {
         cell = new int[9][9];
-        numSolutions = 1;
+        solutionsList = new ArrayList<int[][]>();
+        numSolutions = 3;
         invalidCell = new ArrayList[2];
         invalidCell[0] = new ArrayList<Integer>();
         invalidCell[1] = new ArrayList<Integer>();
@@ -34,10 +36,22 @@ public class Variable {
             }
         }
     }
-    public void setNumSols(int val){
+    public void addSolution(int[][] solution){
+        solutionsList.add(solution);
+    }
+    public ArrayList<int[][]> getSolutions(){
+        return solutionsList;
+    }
+    public void resetSolutions(){
+        solutionsList = new ArrayList<int[][]>();
+    }
+    public int getSolutionCount(){
+        return solutionsList.size();
+    }
+    public void setTargetSolutionsCount(int val){
         numSolutions = val;
     }
-    public int getNumSols(){
+    public int getTargetSolutionsCount(){
         return numSolutions;
     }
     public void addInvalids(int y, int x){

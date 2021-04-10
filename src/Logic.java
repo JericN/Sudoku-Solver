@@ -5,25 +5,30 @@ public class Logic {
     int emptyCellCount;
     int[][][] flagVals;
     int[][] cell;
+    static int currSolutions;
     ArrayList<ArrayList<Integer>> emptyCell;
 
     public void start() {
         System.out.println("Logic Started");
         flagVals = new int[9][9][10];
         cell = var.getCell();
+        currSolutions=0;
         printGrid();
         if (!checkInput()) {
-            System.out.println("Invalid Sudoku");
+            System.out.println("Invalid Input Sudoku");
             return;
         }
         getPossibleSolutions();
         sortPossibleSolutions();
         if (iterateSolutions(0)) {
-            System.out.println("Solution Found");
-            printGrid();
+            System.out.println("Solution(s) Found");
             var.setCell(cell);
         } else {
-            System.out.println("Invalid Sudoku");
+            if(var.getSolutionCount()>0){
+                System.out.println(var.getSolutionCount()+" Solution(s) Found");
+            }else{
+                System.out.println("Invalid Sudoku");
+            }
         }
         System.out.println("Logic Stopped");
     }
@@ -100,7 +105,10 @@ public class Logic {
     public boolean iterateSolutions(int nPos) {
         if (nPos == emptyCellCount) {
             printGrid();
-            return true;
+            var.addSolution(cell);
+            currSolutions++;
+            System.out.println(currSolutions+":"+var.getTargetSolutionsCount());
+            return currSolutions == var.getTargetSolutionsCount();
         } else {
             int yPos = emptyCell.get(nPos).get(0);
             int xPos = emptyCell.get(nPos).get(1);
