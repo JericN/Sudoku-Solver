@@ -4,13 +4,22 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Graphics {
-    Variable vars;
+    Variable vars = new Variable();;
     Logic logic = new Logic();
-    JFrame frame;
+
+    JFrame frame = new JFrame();;
+    JPanel menuTitle = new JPanel();;
+    JPanel menuInput = new JPanel();;
+    JPanel menuOption = new JPanel();;
+    JPanel gridArea = new JPanel();;
+
     JButton[] buttonInput;
     JLabel[] buttonLabel;
     JButton[][] cells;
-    int[][] cell;
+    JButton calc = new JButton();
+
+
+    int[][] cell = new int[9][9];;
     static int WIDTH_BORDER = 16;
     static int HEIGHT_BORDER = 39;
     static int WIDTH = 1422;
@@ -19,20 +28,20 @@ public class Graphics {
 
     public Graphics() {
         System.out.println("Windows Started");
-        vars = new Variable();
         initializeWindow();
         SwingUtilities.updateComponentTreeUI(frame);
     }
 
     private void initializeWindow() {
-        cell = new int[9][9];
         setMainFrame();
-        initializeMenu();
+        setMenuTitleArea();
+        setMenuInputArea();
+        setMenuInputButton();
+        setMenuOptionArea();
         initializeGrid();
     }
 
     private void setMainFrame() {
-        frame = new JFrame();
         frame.setSize(WIDTH + WIDTH_BORDER, HEIGHT + HEIGHT_BORDER);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
@@ -40,30 +49,21 @@ public class Graphics {
         frame.setVisible(true);
     }
 
-    private void initializeMenu() {
-        setMenuTitleArea();
-        setMenuInputArea();
-        setMenuOptionArea();
-    }
-
 
     private void setMenuTitleArea() {
-        JPanel menuTitle = new JPanel();
         menuTitle.setBounds(0, 0, (int) (0.3 * WIDTH), (int) (0.2 * HEIGHT));
         menuTitle.setBackground(Color.gray);
         frame.add(menuTitle);
     }
 
     private void setMenuInputArea() {
-        JPanel menuInput = new JPanel();
         menuInput.setBounds(0, (int) (0.2 * HEIGHT), (int) (0.3 * WIDTH), (int) (0.6 * HEIGHT));
         menuInput.setBackground(Color.white);
         menuInput.setLayout(null);
-        setMenuInputButton(menuInput);
         frame.add(menuInput);
     }
 
-    private void setMenuInputButton(JPanel menuInput) {
+    private void setMenuInputButton() {
         buttonInput = new JButton[10];
         buttonLabel = new JLabel[10];
         for (int i = 0; i < 2; i++) {
@@ -97,11 +97,10 @@ public class Graphics {
     }
 
     public void setMenuOptionArea() {
-        JPanel menuOption = new JPanel();
+        menuOption.setLayout(new GridLayout(1, 3));
         menuOption.setBounds(0, (int) (HEIGHT * 0.8), (int) (WIDTH * 0.3), (int) (HEIGHT * 0.2));
         frame.add(menuOption);
-        JButton calc = new JButton();
-        calc.setBounds(20, 20, 100, 50);
+        calc.setSize(10,10);
         menuOption.add(calc);
         calc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -117,31 +116,36 @@ public class Graphics {
         int height = HEIGHT - 40;
         int offset_w = (int) (WIDTH * 0.3 + 20);
         int offset_h = 20;
-        JPanel gridArea = new JPanel();
-        cell = new int[][]{
-                {3,7,4,1,6,8,2,5,9},
-                {5,1,9,4,2,7,6,8,3},
-                {2,8,6,3,9,5,7,1,4},
-                {6,9,8,5,4,1,3,7,2},
-                {1,2,3,7,8,6,9,4,5},
-                {4,5,7,9,3,2,1,6,8},
-                {9,6,2,8,7,4,5,3,1},
-                {8,3,5,6,1,9,4,2,7},
-                {7,4,1,2,5,3,8,9,6},
-        };
+        gridArea = new JPanel();
+//        cell = new int[][]{
+//                {3,7,4,1,6,8,2,5,9},
+//                {5,1,9,4,2,7,6,8,3},
+//                {2,8,6,3,9,5,7,1,4},
+//                {6,9,8,5,4,1,3,7,2},
+//                {1,2,3,7,8,6,9,4,5},
+//                {4,5,7,9,3,2,1,6,8},
+//                {9,6,2,8,7,4,5,3,1},
+//                {8,3,5,6,1,9,4,2,7},
+//                {7,4,1,2,5,3,8,9,6},
+//        };
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                cell[i][j]=0;
+            }
+        }
         vars.setCell(cell);
-        setGridArea(gridArea, width, height, offset_w, offset_h);
-        setGridCells(gridArea, width, height);
+        setGridArea(width, height, offset_w, offset_h);
+        setGridCells(width, height);
     }
 
-    public void setGridArea(JPanel gridArea, int width, int height, int offset_w, int offset_h) {
+    public void setGridArea(int width, int height, int offset_w, int offset_h) {
         gridArea.setBounds(offset_w, offset_h, width, height);
         gridArea.setBackground(new Color(0, 168, 154));
         gridArea.setLayout(new GridLayout(9, 9));
         frame.add(gridArea);
     }
 
-    public void setGridCells(JPanel gridArea, int width, int height) {
+    public void setGridCells(int width, int height) {
         cells = new JButton[9][9];
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
@@ -163,7 +167,6 @@ public class Graphics {
                         } else {
                             cells[finalY][finalX].setText(String.valueOf(selectedNum));
                         }
-                        System.out.println("saved");
                         vars.setCell(cell);
                     }
                 };

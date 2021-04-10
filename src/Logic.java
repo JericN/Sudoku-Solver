@@ -4,17 +4,19 @@ import java.util.Collections;
 
 public class Logic {
     Variable var = new Variable();
-    static int count;
     int emptyCellCount = 0;
-    ArrayList<ArrayList<Integer>> emptyCell = new ArrayList<ArrayList<Integer>>();
     int[][][] flagVals;
     int[][] cell;
+    ArrayList<ArrayList<Integer>> emptyCell = new ArrayList<ArrayList<Integer>>();
 
     public void start() {
         System.out.println("Logic Started");
-        count = 0;
         cell = var.getCell();
-        flagVals = new int[9][9][9];
+        flagVals = new int[9][9][10];
+        if(!checkInput()){
+            System.out.println("Invalid Sudoku");
+            return;
+        }
         getPossibleSolutions();
         sortFlags();
         if (iterateSolutions(0)) {
@@ -29,12 +31,6 @@ public class Logic {
             System.out.println("Invalid Sudoku");
         }
         System.out.println("Logic Stopped");
-        for (int i = 0; i < emptyCellCount; i++) {
-            for (int j = 0; j < emptyCell.get(i).get(2) + 3; j++) {
-                System.out.print(" " + emptyCell.get(i).get(j));
-            }
-            System.out.println();
-        }
     }
 
     public void getPossibleSolutions() {
@@ -52,8 +48,8 @@ public class Logic {
                                 flag = false;
                             }
                         }
-                        int xZone = (int) Math.ceil((float)(x + 1) / 3);
-                        int yZone = (int) Math.ceil((float)(y + 1) / 3);
+                        int xZone = (int) Math.ceil((float) (x + 1) / 3);
+                        int yZone = (int) Math.ceil((float) (y + 1) / 3);
                         for (int i = (yZone - 1) * 3; i < yZone * 3; i++) {
                             for (int j = (xZone - 1) * 3; j < xZone * 3; j++) {
                                 if (i != y || j != x) {
@@ -76,15 +72,13 @@ public class Logic {
 
     public boolean iterateSolutions(int nPos) {
         if (nPos == emptyCellCount) {
-            count++;
-            System.out.println("DONE: " + count);
-            return checkSolution();
+            return true;
         } else {
             int yPos = emptyCell.get(nPos).get(0);
             int xPos = emptyCell.get(nPos).get(1);
             for (int k = 0; k < emptyCell.get(nPos).get(2); k++) {
                 cell[yPos][xPos] = emptyCell.get(nPos).get(k + 3);
-                if (checkPossible(yPos,xPos)){
+                if (checkPossible(yPos, xPos)) {
                     if (iterateSolutions(nPos + 1)) {
                         return true;
                     }
@@ -94,12 +88,14 @@ public class Logic {
         }
         return false;
     }
-    public boolean checkSolution() {
+    public boolean checkInput(){
         boolean flag = true;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                flag = true;
                 int temp = cell[y][x];
+                if(temp==0){
+                    continue;
+                }
                 for (int k = 0; k < 9; k++) {
                     if (x != k && temp == cell[y][k]) {
                         flag = false;
@@ -108,8 +104,8 @@ public class Logic {
                         flag = false;
                     }
                 }
-                int xZone = (int) Math.ceil((float)(x + 1) / 3);
-                int yZone = (int) Math.ceil((float)(y + 1) / 3);
+                int xZone = (int) Math.ceil((float) (x + 1) / 3);
+                int yZone = (int) Math.ceil((float) (y + 1) / 3);
                 for (int i = (yZone - 1) * 3; i < yZone * 3; i++) {
                     for (int j = (xZone - 1) * 3; j < xZone * 3; j++) {
                         if (i != y || j != x) {
@@ -119,19 +115,14 @@ public class Logic {
                         }
                     }
                 }
-                if (!flag) {
+                if(!flag){
                     return false;
                 }
             }
         }
-        if (flag) {
-            System.out.println("Returned True");
-            return true;
-        } else {
-            return false;
-        }
+        return flag;
     }
-    public boolean checkPossible(int y, int x){
+    public boolean checkPossible(int y, int x) {
         boolean flag = true;
         int temp = cell[y][x];
         for (int k = 0; k < 9; k++) {
@@ -142,8 +133,8 @@ public class Logic {
                 flag = false;
             }
         }
-        int xZone = (int) Math.ceil((float)(x + 1) / 3);
-        int yZone = (int) Math.ceil((float)(y + 1) / 3);
+        int xZone = (int) Math.ceil((float) (x + 1) / 3);
+        int yZone = (int) Math.ceil((float) (y + 1) / 3);
         for (int i = (yZone - 1) * 3; i < yZone * 3; i++) {
             for (int j = (xZone - 1) * 3; j < xZone * 3; j++) {
                 if (i != y || j != x) {
@@ -155,6 +146,7 @@ public class Logic {
         }
         return flag;
     }
+
     public void sortFlags() {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
@@ -188,7 +180,7 @@ public class Logic {
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 for (int k = 1; k < flagVals[y][x][0]; k++) {
-                    if(flagVals[y][x][k]!=0){
+                    if (flagVals[y][x][k] != 0) {
                         System.out.print(flagVals[y][x][k]);
                     }
                 }
