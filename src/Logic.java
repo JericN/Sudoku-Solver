@@ -71,6 +71,7 @@ public class Logic {
     }
 
     public boolean iterateSolutions(int nPos) {
+        System.out.println(nPos);
         if (nPos == emptyCellCount) {
             return true;
         } else {
