@@ -22,7 +22,6 @@ public class Logic {
         sortPossibleSolutions();
         if (iterateSolutions(0)) {
             System.out.println("Solution(s) Found");
-            var.setCell(cell);
         } else {
             if(var.getSolutionCount()>0){
                 System.out.println(var.getSolutionCount()+" Solution(s) Found");
@@ -31,6 +30,15 @@ public class Logic {
             }
         }
         System.out.println("Logic Stopped");
+        for (int k = 0; k < 3; k++) {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    System.out.print(var.getSolutions().get(k)[i][j]);
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
     }
 
 

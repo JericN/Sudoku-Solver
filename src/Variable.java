@@ -6,11 +6,16 @@ public class Variable {
     static ArrayList<Integer>[] invalidCell;
     static int invalidCount;
     static ArrayList<int[][]> solutionsList;
+    static ArrayList<int[][]> savedState;
 
     public Variable() {
         cell = new int[9][9];
         solutionsList = new ArrayList<int[][]>();
-        numSolutions = 3;
+        savedState = new ArrayList<int[][]>();
+        for (int i = 0; i < 4; i++) {
+            savedState.add(new int[9][9]);
+        }
+        numSolutions = 100;
         invalidCell = new ArrayList[2];
         invalidCell[0] = new ArrayList<Integer>();
         invalidCell[1] = new ArrayList<Integer>();
@@ -18,7 +23,11 @@ public class Variable {
     }
 
     public void setCell(int[][] input) {
-        cell = input;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                cell[i][j] = input[i][j];
+            }
+        }
     }
 
     public void setCell(int y, int x, int num) {
@@ -26,7 +35,13 @@ public class Variable {
     }
 
     public int[][] getCell() {
-        return cell;
+        int[][] ret = new int[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                ret[i][j] = cell[i][j] ;
+            }
+        }
+        return ret;
     }
 
     public void resetCell() {
@@ -36,46 +51,85 @@ public class Variable {
             }
         }
     }
-    public void addSolution(int[][] solution){
-        solutionsList.add(solution);
+
+
+    public void addSolution(int[][] solution) {
+        int[][] temp = new int[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                temp[i][j] = solution[i][j] ;
+            }
+        }
+        solutionsList.add(temp);
     }
-    public ArrayList<int[][]> getSolutions(){
+
+    public ArrayList<int[][]> getSolutions() {
         return solutionsList;
     }
-    public void resetSolutions(){
+
+    public void resetSolutions() {
         solutionsList = new ArrayList<int[][]>();
     }
-    public int getSolutionCount(){
+
+    public int getSolutionCount() {
         return solutionsList.size();
     }
-    public void setTargetSolutionsCount(int val){
+
+    public void setTargetSolutionsCount(int val) {
         numSolutions = val;
     }
-    public int getTargetSolutionsCount(){
+
+    public int getTargetSolutionsCount() {
         return numSolutions;
     }
-    public void addInvalids(int y, int x){
+
+
+    public void saveState(int index, int[][] grid) {
+        System.out.println("SAVE: "+index);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                savedState.get(index)[i][j] = grid[i][j];
+            }
+        }
+    }
+
+    public int[][] loadState(int index) {
+        System.out.println("LOAD: "+index);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                cell[i][j] = savedState.get(index)[i][j];
+            }
+        }
+        return cell;
+    }
+
+
+    public void addInvalids(int y, int x) {
         invalidCell[0].add(y);
         invalidCell[1].add(x);
         invalidCount++;
     }
-    public ArrayList<Integer>[] getInvalids(){
+
+    public ArrayList<Integer>[] getInvalids() {
         return invalidCell;
     }
-    public int getInvalidCount(){
+
+    public int getInvalidCount() {
         return invalidCount;
     }
-    public boolean isInvalid(int y, int x){
+
+    public boolean isInvalid(int y, int x) {
         for (int i = 0; i < invalidCount; i++) {
-            if(y == invalidCell[0].get(i) && x == invalidCell[1].get(i)){
+            if (y == invalidCell[0].get(i) && x == invalidCell[1].get(i)) {
                 return true;
             }
         }
         return false;
     }
-    public void removeInvalid(int y, int x){
+
+    public void removeInvalid(int y, int x) {
         for (int i = 0; i < invalidCount; i++) {
-            if(y == invalidCell[0].get(i) && x == invalidCell[1].get(i)){
+            if (y == invalidCell[0].get(i) && x == invalidCell[1].get(i)) {
                 invalidCell[0].remove(i);
                 invalidCell[1].remove(i);
                 i--;
@@ -83,9 +137,10 @@ public class Variable {
             }
         }
     }
-    public void resetInvalid(){
+
+    public void resetInvalid() {
         invalidCell[0] = new ArrayList<Integer>();
         invalidCell[1] = new ArrayList<Integer>();
-        invalidCount=0;
+        invalidCount = 0;
     }
 }

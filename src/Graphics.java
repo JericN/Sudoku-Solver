@@ -1,3 +1,5 @@
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -24,11 +26,14 @@ public class Graphics {
 
     int[] numCount = new int[10];
     int[][] cell = new int[9][9];
+    ArrayList<int[][]> solutionsList = new ArrayList();
     static int WIDTH_BORDER = 16;
     static int HEIGHT_BORDER = 39;
     static int WIDTH = 1422;
     static int HEIGHT = 800;
     int selectedNum = 0;
+    int selectedState = 0;
+    int selectedSolution = 0;
 
     public Graphics() {
         System.out.println("Windows Started");
@@ -44,22 +49,21 @@ public class Graphics {
         setMenuInputButton();
         setMenuOptionArea();
         setMenuConsoleArea();
+        setSolutionNavigateButtons();
         setGridArea();
         setGridCellLabel();
         updateGridLabels();
         updateNumCount();
     }
-    private void initializeConfigWindow(){
+
+    private void initializeConfigWindow() {
         setConfigFrame();
     }
-    private void setConfigFrame(){
-        MigLayout frameLayout = new MigLayout(
-                "wrap 2, fill",
-                "[350!][1050!]",
-                "[" + HEIGHT * 0.1 + "!][" + HEIGHT * 0.5 + "!][" + HEIGHT * 0.2 + "!][" + HEIGHT * 0.15 + "!]"
-        );
+
+    private void setConfigFrame() {
+        MigLayout frameLayout = new MigLayout("wrap 2, fill");
         configFrame = new JFrame();
-        configFrame.setSize(WIDTH/3 + WIDTH_BORDER, HEIGHT/3 + HEIGHT_BORDER);
+        configFrame.setSize(WIDTH / 3 + WIDTH_BORDER, HEIGHT / 3 + HEIGHT_BORDER);
         configFrame.setLayout(frameLayout);
         configFrame.setLocationRelativeTo(null);
         configFrame.setVisible(false);
@@ -67,9 +71,9 @@ public class Graphics {
 
     private void setMainFrame() {
         MigLayout frameLayout = new MigLayout(
-                "wrap 2, fill",
-                "[350!][1050!]",
-                "[" + HEIGHT * 0.1 + "!][" + HEIGHT * 0.5 + "!][" + HEIGHT * 0.2 + "!][" + HEIGHT * 0.15 + "!]"
+                new LC().wrapAfter(4),
+                new AC().fill(),
+                new AC().fill()
         );
         frame.setSize(WIDTH + WIDTH_BORDER, HEIGHT + HEIGHT_BORDER);
         frame.setLayout(frameLayout);
@@ -82,7 +86,7 @@ public class Graphics {
     private void setMenuTitleArea() {
         menuTitle.setLayout(new MigLayout("inset 10 20 10 20, fill"));
         menuTitle.setBackground(colorCyan);
-        frame.add(menuTitle, "cell 0 0, grow");
+        frame.add(menuTitle, "cell 0 0");
         JButton settings = new JButton();
         JLabel title = new JLabel("Sudoku Automatic Solver");
         title.setFont(new Font("Serif", Font.BOLD, 24));
@@ -90,7 +94,7 @@ public class Graphics {
         menuTitle.add(settings, "width 30, height 30, align right center");
 
         settings.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 configFrame.setVisible(true);
             }
         });
@@ -101,7 +105,7 @@ public class Graphics {
                 "inset 30 40 30 40");
         menuInput.setLayout(inputLayout);
         menuInput.setBackground(Color.gray);
-        frame.add(menuInput, "cell 0 1, grow");
+        frame.add(menuInput, "cell 0 1");
     }
 
     private void setMenuInputButton() {
@@ -175,21 +179,47 @@ public class Graphics {
         }
         calculate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                vars.resetSolutions();
                 logic.start();
-                cell = vars.getCell();
+                solutionsList = vars.getSolutions();
+                selectedSolution=0;
+                cell = solutionsList.get(0);
                 updateGridLabels();
                 updateNumCount();
-                vars.resetSolutions();
             }
         });
         reset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 vars.resetCell();
                 cell = vars.getCell();
+                vars.resetSolutions();
+                solutionsList = vars.getSolutions();
+                solutionsList.add(cell);
+                selectedSolution=0;
                 updateGridLabels();
                 updateNumCount();
             }
         });
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                vars.saveState(selectedState, cell);
+            }
+        });
+        load.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cell = vars.loadState(selectedState);
+                updateGridLabels();
+                updateNumCount();
+            }
+        });
+        for (int i = 0; i < 4; i++) {
+            int index = i;
+            state[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    selectedState = index;
+                }
+            });
+        }
     }
 
     public void setMenuConsoleArea() {
@@ -199,33 +229,73 @@ public class Graphics {
         console.setSize(400, 150);
         console.setText("Console");
         menuConsole.add(console);
-        frame.add(menuConsole, "cell 0 3, width 426, height 160");
+        frame.add(menuConsole, "cell 0 3");
     }
 
+    public void setSolutionNavigateButtons() {
+        JButton solutionLeft = new JButton();
+        JButton solutionRight = new JButton();
+        solutionLeft.setText("<");
+        solutionRight.setText(">");
+        solutionLeft.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectedSolution--;
+                if (selectedSolution < 0) {
+                    selectedSolution++;
+                }
+                System.out.println(selectedSolution);
+                for (int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 9; j++) {
+                        System.out.print(solutionsList.get(selectedSolution)[i][j]);
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+                cell = solutionsList.get(selectedSolution);
+                updateGridLabels();
+                updateNumCount();
+            }
+        });
+        solutionRight.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectedSolution++;
+                if (selectedSolution >= vars.getSolutionCount()) {
+                    selectedSolution--;
+                }
+                System.out.println(selectedSolution);
+                cell = solutionsList.get(selectedSolution);
+                updateGridLabels();
+                updateNumCount();
+            }
+        });
+        frame.add(solutionLeft, "cell 1 0 1 4, grow");
+        frame.add(solutionRight, "cell 3 0 1 4, grow");
+    }
 
     public void setGridArea() {
         vars.resetCell();
         cell = vars.getCell();
-//        cell = new int[][]{
-//                {3,7,4,1,6,8,2,5,9},
-//                {5,1,9,4,2,7,6,8,3},
-//                {2,8,6,3,9,5,7,1,4},
-//                {6,9,8,5,4,1,3,7,2},
-//                {1,2,3,7,8,6,9,4,5},
-//                {4,5,7,9,3,2,1,6,8},
-//                {9,6,2,8,7,4,5,3,1},
-//                {8,3,5,6,1,9,4,2,7},
-//                {7,4,1,2,5,3,8,9,6},
-//        };
+        cell = new int[][]{
+                {3, 7, 4, 1, 6, 8, 2, 5, 9},
+                {5, 1, 9, 4, 2, 7, 6, 8, 3},
+                {2, 8, 6, 3, 9, 5, 7, 1, 4},
+                {6, 9, 8, 5, 4, 1, 3, 7, 2},
+                {1, 2, 3, 7, 8, 6, 9, 4, 5},
+                {4, 5, 7, 9, 3, 2, 1, 6, 8},
+                {9, 6, 2, 8, 7, 4, 5, 3, 1},
+                {8, 3, 5, 6, 1, 9, 4, 2, 7},
+                {7, 4, 1, 2, 5, 3, 8, 9, 6},
+        };
         vars.setCell(cell);
-        MigLayout gridLayout = new MigLayout("wrap 9, inset 10 40 10 40");
+        solutionsList.add(cell);
+        MigLayout gridLayout = new MigLayout("wrap 9, inset 10 10 10 10");
         gridArea.setLayout(gridLayout);
         gridArea.setBackground(colorCyan);
-        frame.add(gridArea, "cell 1 0 1 4, grow");
+        frame.add(gridArea, "cell 2 0 1 4");
     }
 
     public void setGridCellLabel() {
-        int cellWidth = (int) ((WIDTH * 0.7 / 9) - 13);
+        int cellWidth = (int) ((WIDTH * 0.7 / 9) - 15);
         int cellHeight = (HEIGHT / 9) - 13;
         cellLabel = new JButton[9][9];
         for (int y = 0; y < 9; y++) {
@@ -245,7 +315,7 @@ public class Graphics {
                         numCount[selectedNum]++;
                         cell[finalY][finalX] = selectedNum;
                         if (selectedNum == 0) {
-                            if(vars.isInvalid(finalY, finalX)){
+                            if (vars.isInvalid(finalY, finalX)) {
                                 vars.removeInvalid(finalY, finalX);
                             }
                             cellLabel[finalY][finalX].setText("");
@@ -253,7 +323,6 @@ public class Graphics {
                             cellLabel[finalY][finalX].setText(String.valueOf(selectedNum));
                         }
                         vars.setCell(finalY, finalX, selectedNum);
-                        logic.checkInput();
                         updateGridLabels();
                         updateNumCount();
                     }
@@ -272,6 +341,7 @@ public class Graphics {
     }
 
     public void updateGridLabels() {
+        logic.checkInput();
         ArrayList[] temp = vars.getInvalids();
         for (int i = 0; i < 10; i++) {
             numCount[i] = 0;
@@ -279,9 +349,9 @@ public class Graphics {
 
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                if(vars.isInvalid(y,x)){
+                if (vars.isInvalid(y, x)) {
                     cellLabel[y][x].setForeground(Color.red);
-                }else{
+                } else {
                     cellLabel[y][x].setForeground(Color.black);
                 }
                 if (cell[y][x] == 0) {
