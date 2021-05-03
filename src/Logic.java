@@ -12,8 +12,7 @@ public class Logic {
         System.out.println("Logic Started");
         flagVals = new int[9][9][10];
         cell = var.getCell();
-        currSolutions=0;
-        printGrid();
+        currSolutions = 0;
         if (!checkInput()) {
             System.out.println("Invalid Input Sudoku");
             return;
@@ -23,22 +22,13 @@ public class Logic {
         if (iterateSolutions(0)) {
             System.out.println("Solution(s) Found");
         } else {
-            if(var.getSolutionCount()>0){
-                System.out.println(var.getSolutionCount()+" Solution(s) Found");
-            }else{
+            if (var.getSolutionCount() > 0) {
+                System.out.println(var.getSolutionCount() + " Solution(s) Found");
+            } else {
                 System.out.println("Invalid Sudoku");
             }
         }
         System.out.println("Logic Stopped");
-        for (int k = 0; k < 3; k++) {
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    System.out.print(var.getSolutions().get(k)[i][j]);
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }
     }
 
 
@@ -112,17 +102,15 @@ public class Logic {
 
     public boolean iterateSolutions(int nPos) {
         if (nPos == emptyCellCount) {
-            printGrid();
             var.addSolution(cell);
             currSolutions++;
-            System.out.println(currSolutions+":"+var.getTargetSolutionsCount());
             return currSolutions == var.getTargetSolutionsCount();
         } else {
             int yPos = emptyCell.get(nPos).get(0);
             int xPos = emptyCell.get(nPos).get(1);
             for (int k = 0; k < emptyCell.get(nPos).get(2); k++) {
                 cell[yPos][xPos] = emptyCell.get(nPos).get(k + 3);
-                if (checkPossible( yPos, xPos)) {
+                if (checkPossible(yPos, xPos)) {
                     if (iterateSolutions(nPos + 1)) {
                         return true;
                     }
@@ -145,13 +133,13 @@ public class Logic {
                 }
                 for (int k = 0; k < 9; k++) {
                     if (x != k && temp == cell[y][k]) {
-                        if(!var.isInvalid(y,k)){
-                            var.addInvalids(y,k);
+                        if (!var.isInvalid(y, k)) {
+                            var.addInvalids(y, k);
                         }
                     }
                     if (y != k && temp == cell[k][x]) {
-                        if(!var.isInvalid(k,x)){
-                            var.addInvalids(k,x);
+                        if (!var.isInvalid(k, x)) {
+                            var.addInvalids(k, x);
                         }
                     }
                 }
@@ -161,8 +149,8 @@ public class Logic {
                     for (int j = (xZone - 1) * 3; j < xZone * 3; j++) {
                         if (i != y || j != x) {
                             if (temp == cell[i][j]) {
-                                if(!var.isInvalid(i,j)){
-                                    var.addInvalids(i,j);
+                                if (!var.isInvalid(i, j)) {
+                                    var.addInvalids(i, j);
                                 }
                             }
                         }
@@ -170,9 +158,9 @@ public class Logic {
                 }
             }
         }
-        if(var.getInvalidCount()==0){
+        if (var.getInvalidCount() == 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -228,10 +216,11 @@ public class Logic {
             }
         }
     }
-    public void printInvalids(){
+
+    public void printInvalids() {
         ArrayList[] temp = var.getInvalids();
         for (int i = 0; i < var.getInvalidCount(); i++) {
-            System.out.print(temp[0].get(i)+":");
+            System.out.print(temp[0].get(i) + ":");
             System.out.println(temp[1].get(i));
         }
     }

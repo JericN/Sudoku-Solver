@@ -38,7 +38,7 @@ public class Variable {
         int[][] ret = new int[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                ret[i][j] = cell[i][j] ;
+                ret[i][j] = cell[i][j];
             }
         }
         return ret;
@@ -57,7 +57,7 @@ public class Variable {
         int[][] temp = new int[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                temp[i][j] = solution[i][j] ;
+                temp[i][j] = solution[i][j];
             }
         }
         solutionsList.add(temp);
@@ -85,7 +85,7 @@ public class Variable {
 
 
     public void saveState(int index, int[][] grid) {
-        System.out.println("SAVE: "+index);
+        System.out.println("SAVE: " + index);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 savedState.get(index)[i][j] = grid[i][j];
@@ -94,7 +94,7 @@ public class Variable {
     }
 
     public int[][] loadState(int index) {
-        System.out.println("LOAD: "+index);
+        System.out.println("LOAD: " + index);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 cell[i][j] = savedState.get(index)[i][j];

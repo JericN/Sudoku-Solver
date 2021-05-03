@@ -88,7 +88,8 @@ public class Graphics {
         menuTitle.setBackground(colorCyan);
         frame.add(menuTitle, "cell 0 0");
         JButton settings = new JButton();
-        JLabel title = new JLabel("Sudoku Automatic Solver");
+        JLabel title = new JLabel("Sudoku Solver");
+        title.setHorizontalAlignment(JLabel.RIGHT);
         title.setFont(new Font("Serif", Font.BOLD, 24));
         menuTitle.add(title, "grow, align center center");
         menuTitle.add(settings, "width 30, height 30, align right center");
@@ -182,7 +183,7 @@ public class Graphics {
                 vars.resetSolutions();
                 logic.start();
                 solutionsList = vars.getSolutions();
-                selectedSolution=0;
+                selectedSolution = 0;
                 cell = solutionsList.get(0);
                 updateGridLabels();
                 updateNumCount();
@@ -195,7 +196,7 @@ public class Graphics {
                 vars.resetSolutions();
                 solutionsList = vars.getSolutions();
                 solutionsList.add(cell);
-                selectedSolution=0;
+                selectedSolution = 0;
                 updateGridLabels();
                 updateNumCount();
             }
@@ -243,14 +244,6 @@ public class Graphics {
                 if (selectedSolution < 0) {
                     selectedSolution++;
                 }
-                System.out.println(selectedSolution);
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
-                        System.out.print(solutionsList.get(selectedSolution)[i][j]);
-                    }
-                    System.out.println();
-                }
-                System.out.println();
                 cell = solutionsList.get(selectedSolution);
                 updateGridLabels();
                 updateNumCount();
@@ -262,7 +255,6 @@ public class Graphics {
                 if (selectedSolution >= vars.getSolutionCount()) {
                     selectedSolution--;
                 }
-                System.out.println(selectedSolution);
                 cell = solutionsList.get(selectedSolution);
                 updateGridLabels();
                 updateNumCount();
@@ -275,17 +267,17 @@ public class Graphics {
     public void setGridArea() {
         vars.resetCell();
         cell = vars.getCell();
-        cell = new int[][]{
-                {3, 7, 4, 1, 6, 8, 2, 5, 9},
-                {5, 1, 9, 4, 2, 7, 6, 8, 3},
-                {2, 8, 6, 3, 9, 5, 7, 1, 4},
-                {6, 9, 8, 5, 4, 1, 3, 7, 2},
-                {1, 2, 3, 7, 8, 6, 9, 4, 5},
-                {4, 5, 7, 9, 3, 2, 1, 6, 8},
-                {9, 6, 2, 8, 7, 4, 5, 3, 1},
-                {8, 3, 5, 6, 1, 9, 4, 2, 7},
-                {7, 4, 1, 2, 5, 3, 8, 9, 6},
-        };
+//        cell = new int[][]{
+//                {3, 7, 4, 1, 6, 8, 2, 5, 9},
+//                {5, 1, 9, 4, 2, 7, 6, 8, 3},
+//                {2, 8, 6, 3, 9, 5, 7, 1, 4},
+//                {6, 9, 8, 5, 4, 1, 3, 7, 2},
+//                {1, 2, 3, 7, 8, 6, 9, 4, 5},
+//                {4, 5, 7, 9, 3, 2, 1, 6, 8},
+//                {9, 6, 2, 8, 7, 4, 5, 3, 1},
+//                {8, 3, 5, 6, 1, 9, 4, 2, 7},
+//                {7, 4, 1, 2, 5, 3, 8, 9, 6},
+//        };
         vars.setCell(cell);
         solutionsList.add(cell);
         MigLayout gridLayout = new MigLayout("wrap 9, inset 10 10 10 10");
