@@ -76,9 +76,9 @@ public class Graphics {
                 new AC().fill()
         );
         frame.setSize(WIDTH + WIDTH_BORDER, HEIGHT + HEIGHT_BORDER);
-        frame.setLayout(frameLayout);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(frameLayout);
         frame.setVisible(true);
     }
 
